@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 import React from 'react';
 
 import { createStore, applyMiddleware } from 'redux';
@@ -20,12 +19,3 @@ render(
 	</Provider>,
 	rootElement
 );
-
-
-
-=======
-import { createStore } from 'redux';
-import RootReducer from './reducers';
-
-let store = createStore(RootReducer);
->>>>>>> cd8832ba74a48ee3e5c54cbff8b950ffd8fe4739

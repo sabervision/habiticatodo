@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 import { RECEIVE_TASKS, ADD_TASK, COMPLETE_TASK } from './actions';
 
 export default rootReducer;
@@ -62,11 +61,3 @@ function completeTaskReducer(state, action) {
 	});
 }
 
-
-
-
-=======
-import { GET_TASKS, ADD_TASK, COMPLETE_TASK } from './actions';
-
-export default rootReducer;
->>>>>>> cd8832ba74a48ee3e5c54cbff8b950ffd8fe4739
