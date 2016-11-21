@@ -31313,7 +31313,6 @@
 	}(_react.Component);
 	
 	function select(state) {
-		console.log(state, 'state?');
 		return {
 			habits: state.tasks.filter(function (task) {
 				return task.type === 'habit';

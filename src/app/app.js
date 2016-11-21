@@ -63,7 +63,6 @@ class App extends Component {
 }
 
 function select(state) {
-	console.log(state, 'state?');
 	return {
 		habits: state.tasks.filter(task => task.type === 'habit'),
 		dailies: state.tasks.filter(task => task.type === 'daily'),
