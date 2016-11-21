@@ -75,6 +75,7 @@ export function receiveTasks(tasks) {
 		}
 	};
 }
+
 export function addTask(text, type) {
 	return {
 		type: ADD_TASK,
