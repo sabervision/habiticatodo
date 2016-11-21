@@ -1,0 +1,8 @@
+{
+<<<<<<< HEAD
+	"presets": ["es2015", "react", "stage-2"],
+=======
+	"presets": ["es2015", "react", "stage-2],
+>>>>>>> cd8832ba74a48ee3e5c54cbff8b950ffd8fe4739
+	"plugins": ['transform-runtime']
+}
