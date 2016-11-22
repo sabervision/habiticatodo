@@ -20,8 +20,9 @@ function rootReducer(state = initialState, action) {
 		case COMPLETE_TASK:
 			return completeTaskReducer(state, action);
 		case LOGIN:
-		case LOGOUT:
 			return Object.assign({}, state, { authentication: action.payload.authentication});
+		case LOGOUT:
+			return Object.assign({}, state, { tasks: action.payload.tasks, authentication: action.payload.authentication});
 		default:
 			return state;
 	}

@@ -121,6 +121,7 @@ export function logout() {
 	return {
 		type: LOGOUT,
 		payload: {
+			tasks: [],
 			authentication: {
 				uuId: '',
 				apiToken: ''
