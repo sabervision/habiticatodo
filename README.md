@@ -1,5 +1,3 @@
-# redux-boilerplate
-A bare bones boilerplate to start up React-Redux projects quickly.
+# Todo App 
 
-- ES2015 syntax
-- Uses gulp as a task manager
+Implements Redux for state management, React for view layer, and the Habitica API
