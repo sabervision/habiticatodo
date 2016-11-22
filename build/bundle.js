@@ -31206,9 +31206,13 @@
 	
 	var _actions = __webpack_require__(587);
 	
-	var _taskList = __webpack_require__(591);
+	var _taskList = __webpack_require__(590);
 	
 	var _taskList2 = _interopRequireDefault(_taskList);
+	
+	var _nav = __webpack_require__(591);
+	
+	var _nav2 = _interopRequireDefault(_nav);
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
@@ -31261,6 +31265,7 @@
 				return _react2.default.createElement(
 					'div',
 					{ className: 'container' },
+					_react2.default.createElement(_nav2.default, null),
 					_react2.default.createElement(
 						'section',
 						null,
@@ -31321,7 +31326,7 @@
 				return task.type === 'daily';
 			}),
 			todos: state.tasks.filter(function (task) {
-				return task.type === 'todo';
+				return task.type === 'todo' && !task.completed;
 			})
 		};
 	}
@@ -32868,17 +32873,17 @@
 	Object.defineProperty(exports, "__esModule", {
 		value: true
 	});
-	exports.COMPLETE_TASK = exports.ADD_TASK = exports.RECEIVE_TASKS = undefined;
+	exports.LOGOUT = exports.LOGIN = exports.COMPLETE_TASK = exports.ADD_TASK = exports.RECEIVE_TASKS = undefined;
 	exports.fetchTasks = fetchTasks;
 	exports.receiveTasks = receiveTasks;
 	exports.addTask = addTask;
 	exports.completeTask = completeTask;
+	exports.login = login;
+	exports.logout = logout;
 	
 	var _isomorphicFetch = __webpack_require__(588);
 	
 	var _isomorphicFetch2 = _interopRequireDefault(_isomorphicFetch);
-	
-	var _config = __webpack_require__(590);
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
@@ -32887,6 +32892,9 @@
 	var RECEIVE_TASKS = exports.RECEIVE_TASKS = 'RECEIVE_TASKS';
 	var ADD_TASK = exports.ADD_TASK = 'ADD_TASK';
 	var COMPLETE_TASK = exports.COMPLETE_TASK = 'COMPLETE_TASK';
+	
+	var LOGIN = exports.LOGIN = 'LOGIN';
+	var LOGOUT = exports.LOGOUT = 'LOGOUT';
 	
 	//================================================================
 	// placeholder data to mimic data to be received from API
@@ -32926,17 +32934,23 @@
 	// 	};
 	// }
 	//================================================================
-	// we must now convert the above action to an ASYNC action to retrieve from Habitca API
+	// we must now convert the above action to an ASYNC action to retrieve from Habitica API
 	
 	// async action creator that returns a promise
 	// when fulfilled, dispatches another action to 'receiveTasks'
 	function fetchTasks() {
 	
-		return function (dispatch) {
+		return function (dispatch, getState) {
+			var state = getState();
+	
+			if (!state.authentication || state.authentication.uuId.length === 0 || state.authentication.apiToken.length === 0) {
+				return function () {};
+			}
+	
 			return (0, _isomorphicFetch2.default)('https://habitica.com/api/v3/tasks/user', {
 				headers: {
-					'X-API-User': _config.uuId,
-					'X-API-Key': _config.apiToken
+					'X-API-User': state.authentication.uuId,
+					'X-API-Key': state.authentication.apiToken
 				}
 			}).then(function (response) {
 				return response.json();
@@ -32970,6 +32984,30 @@
 			type: COMPLETE_TASK,
 			payload: {
 				id: id
+			}
+		};
+	}
+	
+	function login(uuId, apiToken) {
+		return {
+			type: LOGIN,
+			payload: {
+				authentication: {
+					uuId: uuId,
+					apiToken: apiToken
+				}
+			}
+		};
+	}
+	
+	function logout() {
+		return {
+			type: LOGOUT,
+			payload: {
+				authentication: {
+					uuId: '',
+					apiToken: ''
+				}
 			}
 		};
 	}
@@ -33427,18 +33465,6 @@
 
 /***/ },
 /* 590 */
-/***/ function(module, exports) {
-
-	'use strict';
-	
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	var uuId = exports.uuId = 'c66374c0-1996-40ca-b404-4e9039230daf';
-	var apiToken = exports.apiToken = '143bc1e1-7144-48e0-9bda-08cb7dc66d8e';
-
-/***/ },
-/* 591 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -33556,6 +33582,133 @@
 	exports.default = (0, _reactRedux.connect)(select)(TaskList);
 
 /***/ },
+/* 591 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+		value: true
+	});
+	
+	var _getPrototypeOf = __webpack_require__(501);
+	
+	var _getPrototypeOf2 = _interopRequireDefault(_getPrototypeOf);
+	
+	var _classCallCheck2 = __webpack_require__(527);
+	
+	var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
+	
+	var _createClass2 = __webpack_require__(528);
+	
+	var _createClass3 = _interopRequireDefault(_createClass2);
+	
+	var _possibleConstructorReturn2 = __webpack_require__(532);
+	
+	var _possibleConstructorReturn3 = _interopRequireDefault(_possibleConstructorReturn2);
+	
+	var _inherits2 = __webpack_require__(579);
+	
+	var _inherits3 = _interopRequireDefault(_inherits2);
+	
+	var _react = __webpack_require__(299);
+	
+	var _react2 = _interopRequireDefault(_react);
+	
+	var _reactRedux = __webpack_require__(490);
+	
+	var _actions = __webpack_require__(587);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	var Navigation = function (_Component) {
+		(0, _inherits3.default)(Navigation, _Component);
+	
+		function Navigation(props) {
+			(0, _classCallCheck3.default)(this, Navigation);
+			return (0, _possibleConstructorReturn3.default)(this, (Navigation.__proto__ || (0, _getPrototypeOf2.default)(Navigation)).call(this, props));
+		}
+	
+		(0, _createClass3.default)(Navigation, [{
+			key: 'handleLogin',
+			value: function handleLogin(uuId, apiToken) {
+				var dispatch = this.props.dispatch;
+	
+	
+				dispatch((0, _actions.login)(uuId, apiToken));
+	
+				dispatch((0, _actions.fetchTasks)());
+			}
+		}, {
+			key: 'render',
+			value: function render() {
+				var _this2 = this;
+	
+				var _props = this.props,
+				    loggedIn = _props.loggedIn,
+				    dispatch = _props.dispatch;
+	
+	
+				var apiToken = void 0,
+				    uuId = void 0;
+	
+				var displayAuthentication = function displayAuthentication() {
+					return loggedIn ? _react2.default.createElement('div', null) : _react2.default.createElement(
+						'div',
+						null,
+						_react2.default.createElement('input', { type: 'text', ref: function ref(node) {
+								return apiToken = node;
+							},
+							placeholder: 'API token' }),
+						_react2.default.createElement('input', { type: 'text', ref: function ref(node) {
+								return uuId = node;
+							},
+							placeholder: 'UUID' }),
+						_react2.default.createElement(
+							'a',
+							{ onClick: function onClick() {
+									return _this2.handleLogin(uuId.value, apiToken.value);
+								} },
+							'login'
+						)
+					);
+				};
+	
+				var displayLogout = function displayLogout() {
+					return loggedIn ? _react2.default.createElement(
+						'a',
+						{ onClick: function onClick() {
+								return dispatch((0, _actions.logout)());
+							} },
+						'Logout'
+					) : _react2.default.createElement('a', null);
+				};
+	
+				return _react2.default.createElement(
+					'div',
+					null,
+					displayAuthentication(),
+					displayLogout()
+				);
+			}
+		}]);
+		return Navigation;
+	}(_react.Component);
+	
+	function select(state) {
+		var loggedIn = false;
+	
+		if (state.authentication && state.authentication.apiToken.length > 0 && state.authentication.uuId.length > 0) {
+			loggedIn = true;
+		}
+	
+		return {
+			loggedIn: loggedIn
+		};
+	}
+	exports.default = (0, _reactRedux.connect)(select)(Navigation);
+
+/***/ },
 /* 592 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -33569,13 +33722,13 @@
 	
 	var _toConsumableArray3 = _interopRequireDefault(_toConsumableArray2);
 	
-	var _assign = __webpack_require__(603);
-	
-	var _assign2 = _interopRequireDefault(_assign);
-	
-	var _extends2 = __webpack_require__(607);
+	var _extends2 = __webpack_require__(603);
 	
 	var _extends3 = _interopRequireDefault(_extends2);
+	
+	var _assign = __webpack_require__(604);
+	
+	var _assign2 = _interopRequireDefault(_assign);
 	
 	var _actions = __webpack_require__(587);
 	
@@ -33604,6 +33757,9 @@
 				return addTaskReducer(state, action);
 			case _actions.COMPLETE_TASK:
 				return completeTaskReducer(state, action);
+			case _actions.LOGIN:
+			case _actions.LOGOUT:
+				return (0, _assign2.default)({}, state, { authentication: action.payload.authentication });
 			default:
 				return state;
 		}
@@ -33844,26 +34000,54 @@
 /* 603 */
 /***/ function(module, exports, __webpack_require__) {
 
-	module.exports = { "default": __webpack_require__(604), __esModule: true };
+	"use strict";
+	
+	exports.__esModule = true;
+	
+	var _assign = __webpack_require__(604);
+	
+	var _assign2 = _interopRequireDefault(_assign);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	exports.default = _assign2.default || function (target) {
+	  for (var i = 1; i < arguments.length; i++) {
+	    var source = arguments[i];
+	
+	    for (var key in source) {
+	      if (Object.prototype.hasOwnProperty.call(source, key)) {
+	        target[key] = source[key];
+	      }
+	    }
+	  }
+	
+	  return target;
+	};
 
 /***/ },
 /* 604 */
 /***/ function(module, exports, __webpack_require__) {
 
-	__webpack_require__(605);
-	module.exports = __webpack_require__(514).Object.assign;
+	module.exports = { "default": __webpack_require__(605), __esModule: true };
 
 /***/ },
 /* 605 */
 /***/ function(module, exports, __webpack_require__) {
 
-	// 19.1.3.1 Object.assign(target, source)
-	var $export = __webpack_require__(513);
-	
-	$export($export.S + $export.F, 'Object', {assign: __webpack_require__(606)});
+	__webpack_require__(606);
+	module.exports = __webpack_require__(514).Object.assign;
 
 /***/ },
 /* 606 */
+/***/ function(module, exports, __webpack_require__) {
+
+	// 19.1.3.1 Object.assign(target, source)
+	var $export = __webpack_require__(513);
+	
+	$export($export.S + $export.F, 'Object', {assign: __webpack_require__(607)});
+
+/***/ },
+/* 607 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -33899,34 +34083,6 @@
 	    while(length > j)if(isEnum.call(S, key = keys[j++]))T[key] = S[key];
 	  } return T;
 	} : $assign;
-
-/***/ },
-/* 607 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-	
-	exports.__esModule = true;
-	
-	var _assign = __webpack_require__(603);
-	
-	var _assign2 = _interopRequireDefault(_assign);
-	
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-	
-	exports.default = _assign2.default || function (target) {
-	  for (var i = 1; i < arguments.length; i++) {
-	    var source = arguments[i];
-	
-	    for (var key in source) {
-	      if (Object.prototype.hasOwnProperty.call(source, key)) {
-	        target[key] = source[key];
-	      }
-	    }
-	  }
-	
-	  return target;
-	};
 
 /***/ }
 /******/ ]);

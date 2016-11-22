@@ -1,11 +1,13 @@
 import fetch from 'isomorphic-fetch';
-import { uuId, apiToken } from './config';
 
 // action types
 // export const GET_TASKS = 'GET_TASKS';
 export const RECEIVE_TASKS = 'RECEIVE_TASKS';
 export const ADD_TASK = 'ADD_TASK';
 export const COMPLETE_TASK = 'COMPLETE_TASK';
+
+export const LOGIN = 'LOGIN';
+export const LOGOUT = 'LOGOUT';
 
 //================================================================
 // placeholder data to mimic data to be received from API
@@ -46,17 +48,24 @@ export const COMPLETE_TASK = 'COMPLETE_TASK';
 // 	};
 // }
 //================================================================
-// we must now convert the above action to an ASYNC action to retrieve from Habitca API
+// we must now convert the above action to an ASYNC action to retrieve from Habitica API
 
 // async action creator that returns a promise
 // when fulfilled, dispatches another action to 'receiveTasks'
 export function fetchTasks() {
 
-	return function(dispatch) {
+	return function(dispatch, getState) {
+		let state = getState();
+
+		if(!state.authentication || state.authentication.uuId.length === 0 ||
+			state.authentication.apiToken.length === 0) {
+			return function() {};
+		}
+
 		return fetch('https://habitica.com/api/v3/tasks/user', {
 			headers: {
-				'X-API-User': uuId,
-				'X-API-Key': apiToken
+				'X-API-User': state.authentication.uuId,
+				'X-API-Key': state.authentication.apiToken
 			}
 			})
 			.then(response => response.json())
@@ -94,3 +103,29 @@ export function completeTask(id) {
 		}
 	}
 }
+
+export function login(uuId, apiToken) {
+	return {
+		type: LOGIN,
+		payload: {
+			authentication: {
+				uuId,
+				apiToken
+			}
+		}
+	};
+
+}
+
+export function logout() {
+	return {
+		type: LOGOUT,
+		payload: {
+			authentication: {
+				uuId: '',
+				apiToken: ''
+			}
+		}
+	};
+}
+
